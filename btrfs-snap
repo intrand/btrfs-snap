@@ -243,10 +243,10 @@ if [ -e ${base}/${snapname} ]; then
 fi
 
 if [ $time_duration -gt 0 ]; then
-    newestSnapshot=`ls -dr $base/${snappattern} 2>/dev/null| head -n 1`
+    newestSnapshot=$(ls -dr $base/${snappattern} 2>/dev/null| head -n 1)
     if [ ! -z "$newestSnapshot" -a -e "$newestSnapshot" ]; then
-        snap_time=`stat -c "%Y" "${newestSnapshot}"`
-        cur_time=`date +%s`
+        snap_time=$(stat -c "%Y" "${newestSnapshot}")
+        cur_time=$(date +%s)
         if $use_transid; then
             # get transaction ids
             id_snap=$(btrfs subvolume find-new "$newestSnapshot" 99999999| sed 's/[^0-9]//g')
@@ -256,7 +256,7 @@ if [ $time_duration -gt 0 ]; then
                 exit $OMITT_ERROR_CODE
             fi
         else
-            mp_time=`stat -c "%Y" "${mp}"`
+            mp_time=$(stat -c "%Y" "${mp}")
             if [ $snap_time == $mp_time ]; then
                 log.info "No snapshot created since timestamp of newest snapshot $newestSnapshot equal $mp."
                 exit $OMITT_ERROR_CODE
@@ -273,7 +273,7 @@ if [ $time_duration -gt 0 ]; then
      touch "${mp}"
 fi
 
-out=`btrfs subvol snapshot ${readonly} ${mp} ${base}/${snapname} 2>&1`
+out=$(btrfs subvol snapshot ${readonly} ${mp} ${base}/${snapname} 2>&1)
 if [ $? -eq 0 ] ; then
     log.info "${out}"
 else
@@ -282,7 +282,8 @@ else
 fi
 
 ls -dr $base/${snappattern} | tail -n +${cnt} | while read snap ; do
-    out=`btrfs subvolume delete ${snap} 2>&1`
+    out=$(btrfs subvolume delete ${snap} 2>&1)
+	
     if [ $? -eq 0 ] ; then
         log.info "${out}"
     else
